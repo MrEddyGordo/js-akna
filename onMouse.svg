@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created using Karbon, part of Calligra: http://www.calligra.org/karbon -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60.8pt" height="60.8pt">
+<defs/>
+<g id="layer0">
+  <g id="group0" transform="translate(-0.625, -0.625)" fill="none">
+   <path id="rect1313_65_" transform="matrix(-1 0 0 -1 76.625 76.625)" fill="#fdfcfd" d="M0.009 0L75.991 0C75.996 0 76 0.004 76 0.009L76 75.99C76 75.996 75.996 76 75.991 76L0.009 76C0.004 76 0 75.996 0 75.99L0 0.009C0 0.004 0.004 0 0.009 0Z"/>
+   <path id="path1341_65_" transform="matrix(-1 0 0 -1 76.625 76.625)" fill="#757575" d="M75.99 0C75.995 0 76 0.005 76 0.01L76 75.991C76 75.996 75.995 76 75.99 76L0.009 76C0.004 76 0 75.996 0 75.991Z"/>
+   <path id="rect1311_65_" transform="matrix(-1 0 0 -1 68.125 68.125)" fill="#b9b9b9" d="M0.008 0L58.992 0L59 0.008L59 58.991L58.992 59L0.008 59L0 58.991L0 0.008Z"/>
+  </g>
+  <g id="group1" transform="" fill="none"/>
+ </g>
+</svg>
