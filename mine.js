@@ -8,7 +8,7 @@ var c = canvas.getContext('2d');
 var imageObjects = [];
 var mineArray = [];
 var nowOpened = [];
-var numberOfMines = 100;
+var numberOfMines = 70;
 var xSize=30;
 var ySize=20;
 var oneSqx = 30;
@@ -97,7 +97,7 @@ function loadImages(images, onComplete) {
 		}
 
 
-loadImages(["Minesweeper_flag.svg", "empty.svg", "mine1.png", "onMouse.svg", "green_flag.svg", "sad.png"], init);
+loadImages(["images/Minesweeper_flag.svg", "images/empty.svg", "images/mine1.png", "images/onMouse.svg", "images/green_flag.svg", "images/sad.png"], init);
 
 
 function init() {
@@ -117,7 +117,7 @@ function OneMine(i,j,x,y,mine, visible)  {
 	this.mine=mine;
 	this.visible=visible;
 	this.flagged=false;
-	this.hasImage=false;
+	this.hasEmptyImage=false;
 
 	//méret
 	this.x = x;
@@ -141,12 +141,14 @@ OneMine.prototype.setMine = function(){
 	//this.spell="x";
 }
 
+OneMine.prototype.setVisible = function(){
+	this.visible=true;
+}
+
+//empties content
 OneMine.prototype.reset = function(){
-		if (!this.flagged) {
-			c.clearRect(this.xPoz+1, this.yPoz+1, this.x-2, this.y-2);
-		} else if (gameOver) {
-			c.clearRect(this.xPoz+1, this.yPoz+1, this.x-2, this.y-2);
-		}
+		
+		if(!this.flagged) c.clearRect(this.xPoz+1, this.yPoz+1, this.x-2, this.y-2);
 	}
 
 OneMine.prototype.clicked = function(){
@@ -158,19 +160,19 @@ OneMine.prototype.clicked = function(){
 		openAll();
 	}
 	nowOpened = [];
-	opener(this.i,this.j);
-	openerShow(this.i,this.j);
+	setBlockVisible(this.i,this.j);
+	showAllVisibles(this.i,this.j);
 }
 
 
 OneMine.prototype.rightclicked = function(){
-	if (!gameOver) {
+	if (!gameOver && !this.visible) {
 	if (!this.flagged) {
 	c.drawImage(imageObjects[0],this.xPoz+1,this.yPoz+1,oneSqx-2,oneSqy-2);
 	this.flagged=true;
 } else{
 	this.flagged=false;
-	this.reset();
+	//this.reset();
 	this.draw();
 }
 }
@@ -183,7 +185,8 @@ OneMine.prototype.update = function(){
 		return 0;
 	}
 
-		if (!this.flagged && this.hasImage &&!gameOver) {
+		if (!this.flagged && this.hasEmptyImage &&!gameOver) {
+			//onMouse image
 		c.drawImage(imageObjects[3],this.xPoz+1,this.yPoz+1,oneSqx-2,oneSqy-2);
 	} else if (this.flagged && !gameOver) {
 		return 0;
@@ -199,44 +202,43 @@ OneMine.prototype.update = function(){
 }
 
 	OneMine.prototype.draw = function () {
+		
 		if (!this.flagged) {
-		if (this.mine==true) {
-		this.reset;
-		c.fillStyle = "#FF0000";
-		c.fillRect(this.xPoz+1, this.yPoz+1, this.x-2, this.y-2);
-		c.drawImage(imageObjects[2],this.xPoz+1,this.yPoz+1,oneSqx-2,oneSqy-2);
+			
+			this.reset();
+			
+			if (this.mine==true) {
+				
+				c.fillStyle = "#FF0000";
+				c.fillRect(this.xPoz+1, this.yPoz+1, this.x-2, this.y-2);
+				c.drawImage(imageObjects[2],this.xPoz+1,this.yPoz+1,oneSqx-2,oneSqy-2);
 		}
 
-		//c.rect(Xpoz,Ypoz,Xméter,Yméret)
-		if (this.visible==true) {
-			if (this.numberOfNeighborMines==0) {
-				this.spell="";
-			} else {
-			this.spell=this.numberOfNeighborMines;
-		}
-
-
+		if (this.visible == true) {
 		c.fillStyle="black";
 		c.lineWidth = 2;
 		//c.rect(this.xPoz, this.yPoz, this.x, this.y);
 		c.stroke();
 		c.textAlign="center";
 		c.textBaseline="middle";
+
 		c.fillText(this.spell, this.xPoz+(this.x)/2, topLeftY+this.j*this.y+(this.y)/2);
 	} else {
 		this.setemptyImage();
-	}
-} else if (gameOver && this.flagged) {
-		if (this.mine) {
-			//happy
-			this.reset();
-			this.putPicture(4);
-		} else if (!this.mine) {
-			//sad
-			//this.putPicture(5);
-			this.reset;
-			c.fillStyle = "#FF0000";
-			this.putPicture(2);
+	} 
+	 
+	if (gameOver && this.flagged) {
+				if (this.mine) {
+					//happy
+					this.reset();
+					this.putPicture(4);
+				} else if (!this.mine) {
+					//sad
+					//this.putPicture(5);
+					this.reset;
+					c.fillStyle = "#FF0000";
+					this.putPicture(2);
+				}
 		}
 }
 	}
@@ -244,7 +246,7 @@ OneMine.prototype.update = function(){
 	OneMine.prototype.setemptyImage = function () {
 			c.drawImage(imageObjects[1],(this.xPoz)+1,(this.yPoz)+1,oneSqx,oneSqy);
 			//c.drawImage(flagImg,this.xPoz+1,this.yPoz+1,oneSqx-2,oneSqy-2);
-			this.hasImage=true;
+			this.hasEmptyImage=true;
 	}
 
 
@@ -255,6 +257,9 @@ OneMine.prototype.update = function(){
 
 		for (var x = -1; x <= 1; x++ ){
 			for (var y = -1; y <= 1; y++ ){
+				if (x == 0 && y == 0){
+					continue;
+			 	}
 				if ((this.i)+x>=0 && (this.j)+y>=0 && (this.i)+x<xSize && (this.j)+y<ySize) {
 					if (mineArray[(this.i)+x][(this.j)+y].mine == true) {
 						numberOfNeighborMines++;
@@ -263,18 +268,25 @@ OneMine.prototype.update = function(){
 		}
 		//intet adunk vissza: a körülöttünk lévő aknák számát
 		this.numberOfNeighborMines = numberOfNeighborMines;
+		
+		if (this.numberOfNeighborMines==0) {
+				this.spell="";
+		} else {
+		this.spell=this.numberOfNeighborMines;
+		}
+		
 	}
 	}
 
 
-function openerShow(){
+function showAllVisibles(){
 	for (var i = 0; i < nowOpened.length; i++) {
 		myX=nowOpened[i].x;
 		myY=nowOpened[i].y;
-	mineArray[myX][myY].hasImage=false;
-	mineArray[myX][myY].reset();
-	mineArray[myX][myY].draw();
-}
+
+		mineArray[myX][myY].hasEmptyImage=false;
+		mineArray[myX][myY].draw();
+	}
 }
 
 
@@ -283,26 +295,25 @@ OneMine.prototype.putPicture = function(imageNum) {
 }
 
 
-function opener(i,j) {
-		if(inBound(i,j) && mineArray[i][j].mine==false && mineArray[i][j].visible==false){
-					mineArray[i][j].visible=true;
-					nowOpened.push(new myNeigh(i,j));
-						// for (var x = -1; x <= 1; x++ ){
-						// 	for (var y = -1; y <= 1; y++ ){
-						// 	if (x == 0 && y == 0) {
-						// 		continue;
-						// 	}
-						// 	opener(i+x,j+y);
-						// 	console.log(i+x,j+y);
-						// }}
+function setBlockVisible(i,j) {
+		if(inBound(i,j)){
 
-						opener(i+1,j);
-						opener(i-1,j);
-						opener(i,j+1);
-						opener(i,j-1);
-		}
+		mineArray[i][j].setVisible();
 
+		nowOpened.push(new myNeigh(i,j));
+		
+		if (mineArray[i][j].numberOfNeighborMines==0) {
+			for (var x = -1; x <= 1; x++ ){
+				for (var y = -1; y <= 1; y++ ){
+					if (x == 0 && y == 0) continue;
+					if(inBound(i+x,j+y) && !mineArray[i+x][j+y].visible) setBlockVisible(i+x,j+y);
+// 					mineArray[i+x][j+y].setVisible();
+					//console.log(i+x,j+y) 
+				}
+		}} else return 0; 
+	}
 }
+
 
 function inBound(x,y){
 	if(x>=0&&y>=0&&x<xSize&&y<ySize) return true;
@@ -384,6 +395,31 @@ function randomMine(){
 	}
 }
 
+//--------- DEBUG START
+
+function DEBUG_getAll(){
+
+for(var i = 0;i<xSize;i++){
+	for(var j = 0;j<ySize;j++){
+		
+		console.log(mineArray[i][j]);
+
+
+}}
+}
+
+function DEBUG_getAllVisible(){
+
+for(var i = 0;i<xSize;i++){
+	for(var j = 0;j<ySize;j++){
+		
+		if(mineArray[i][j].visible) console.log(mineArray[i][j]);
+
+
+}}
+}
+
+//--------- DEBUG END
 
 function drawAll(){
 
