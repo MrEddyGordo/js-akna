@@ -13,7 +13,8 @@ var xSize=30;
 var ySize=20;
 var oneSqx = 30;
 var oneSqy = 30;
-var topLeftX=10;
+var topLeftX=canvas.width/2-xSize*oneSqx/2;
+//var topLeftX=10;
 var topLeftY=10;
 var mouseIsOnMe = undefined;
 var gameOver = false;
@@ -395,31 +396,7 @@ function randomMine(){
 	}
 }
 
-//--------- DEBUG START
 
-function DEBUG_getAll(){
-
-for(var i = 0;i<xSize;i++){
-	for(var j = 0;j<ySize;j++){
-		
-		console.log(mineArray[i][j]);
-
-
-}}
-}
-
-function DEBUG_getAllVisible(){
-
-for(var i = 0;i<xSize;i++){
-	for(var j = 0;j<ySize;j++){
-		
-		if(mineArray[i][j].visible) console.log(mineArray[i][j]);
-
-
-}}
-}
-
-//--------- DEBUG END
 
 function drawAll(){
 
@@ -435,19 +412,22 @@ for(var i = 0;i<xSize;i++){
 
 function drawBoard(){
 
-for(var i = 0;i<xSize+1;i++){
-	c.beginPath();
-	c.moveTo(topLeftX+oneSqx*i,topLeftY);
-	c.lineTo(topLeftX+oneSqx*i,topLeftY+oneSqy*ySize);
-	c.lineWidth = 1;
-	c.stroke();
-}
-	for(var j = 0;j<ySize+1;j++){
-		c.beginPath();
-		c.moveTo(topLeftX,topLeftY+oneSqy*j);
-		c.lineTo(topLeftY+oneSqy*xSize,topLeftY+oneSqy*j);
-		c.stroke();
-	}
+		for(var i = 0;i<xSize+1;i++){
+			c.beginPath();
+			c.moveTo(topLeftX+oneSqx*i,topLeftY);
+			c.lineTo(topLeftX+oneSqx*i,topLeftY+oneSqy*ySize);
+			c.lineWidth = 1;
+			c.stroke();
+			
+		}
+		
+		
+		for(var j = 0;j<ySize+1;j++){
+			c.beginPath();
+			c.moveTo(topLeftX,topLeftY+oneSqy*j);
+			c.lineTo(topLeftX+oneSqy*xSize,topLeftY+oneSqy*j);
+			c.stroke();
+		}
 
 }
 
