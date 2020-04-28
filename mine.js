@@ -9,11 +9,16 @@ var imageObjects = [];
 var mineArray = [];
 var nowOpened = [];
 var numberOfMines = 70;
+
+//size of the board
 var xSize=30;
 var ySize=20;
-var oneSqx = 30;
-var oneSqy = 30;
-var topLeftX=canvas.width/2-xSize*oneSqx/2;
+
+//size of one rectangle
+var oneRectX = 30;
+var oneRectY = 30;
+
+var topLeftX=canvas.width/2-xSize*oneRectX/2;
 //var topLeftX=10;
 var topLeftY=10;
 var mouseIsOnMe = undefined;
@@ -45,8 +50,8 @@ canvas.addEventListener("mousemove",
         mouse.x = event.x;
         mouse.y = event.y;
 
-	mouse.i = Math.floor((mouse.x - topLeftX) / oneSqx);
-	mouse.j = Math.floor((mouse.y - topLeftY) / oneSqy);
+	mouse.i = Math.floor((mouse.x - topLeftX) / oneRectX);
+	mouse.j = Math.floor((mouse.y - topLeftY) / oneRectY);
 
 	//console.log(mouse);
 })
@@ -114,15 +119,15 @@ function myNeigh(x,y){
 	this.y=y;
 }
 
-function OneMine(i,j,x,y,mine, visible)  {
+function OneMine(i,j,mine, visible)  {
 	this.mine=mine;
 	this.visible=visible;
 	this.flagged=false;
 	this.hasEmptyImage=false;
 
 	//méret
-	this.x = x;
-	this.y = y;
+	//this.x = x;
+	//this.y = y;
 
 	//tömbbeli helyzet
 	this.i = i;
@@ -132,8 +137,8 @@ function OneMine(i,j,x,y,mine, visible)  {
 	this.numberOfNeighborMines=0;
 
 	//konkrét négyzetek bal felső csúcsa
-	this.xPoz=topLeftX+this.i*this.x;
-	this.yPoz=topLeftY+this.j*this.y;
+	this.xPoz=topLeftX+this.i*oneRectX;
+	this.yPoz=topLeftY+this.j*oneRectY;
 }
 
 
@@ -149,7 +154,7 @@ OneMine.prototype.setVisible = function(){
 //empties content
 OneMine.prototype.reset = function(){
 		
-		if(!this.flagged) c.clearRect(this.xPoz+1, this.yPoz+1, this.x-2, this.y-2);
+		if(!this.flagged) c.clearRect(this.xPoz+1, this.yPoz+1, oneRectX-2, oneRectY-2);
 	}
 
 OneMine.prototype.clicked = function(){
@@ -169,7 +174,7 @@ OneMine.prototype.clicked = function(){
 OneMine.prototype.rightclicked = function(){
 	if (!gameOver && !this.visible) {
 	if (!this.flagged) {
-	c.drawImage(imageObjects[0],this.xPoz+1,this.yPoz+1,oneSqx-2,oneSqy-2);
+	c.drawImage(imageObjects[0],this.xPoz+1,this.yPoz+1,oneRectX-2,oneRectY-2);
 	this.flagged=true;
 } else{
 	this.flagged=false;
@@ -188,7 +193,7 @@ OneMine.prototype.update = function(){
 
 		if (!this.flagged && this.hasEmptyImage &&!gameOver) {
 			//onMouse image
-		c.drawImage(imageObjects[3],this.xPoz+1,this.yPoz+1,oneSqx-2,oneSqy-2);
+		c.drawImage(imageObjects[3],this.xPoz+1,this.yPoz+1,oneRectX-2,oneRectY-2);
 	} else if (this.flagged && !gameOver) {
 		return 0;
 	}
@@ -211,8 +216,8 @@ OneMine.prototype.update = function(){
 			if (this.mine==true) {
 				
 				c.fillStyle = "#FF0000";
-				c.fillRect(this.xPoz+1, this.yPoz+1, this.x-2, this.y-2);
-				c.drawImage(imageObjects[2],this.xPoz+1,this.yPoz+1,oneSqx-2,oneSqy-2);
+				c.fillRect(this.xPoz+1, this.yPoz+1, oneRectX-2,oneRectY-2);
+				c.drawImage(imageObjects[2],this.xPoz+1,this.yPoz+1,oneRectX-2,oneRectY-2);
 		}
 
 		if (this.visible == true) {
@@ -223,7 +228,7 @@ OneMine.prototype.update = function(){
 		c.textAlign="center";
 		c.textBaseline="middle";
 
-		c.fillText(this.spell, this.xPoz+(this.x)/2, topLeftY+this.j*this.y+(this.y)/2);
+		c.fillText(this.spell, this.xPoz+(oneRectX)/2, topLeftY+this.j*oneRectY+(oneRectY)/2);
 	} else {
 		this.setemptyImage();
 	} 
@@ -245,8 +250,8 @@ OneMine.prototype.update = function(){
 	}
 
 	OneMine.prototype.setemptyImage = function () {
-			c.drawImage(imageObjects[1],(this.xPoz)+1,(this.yPoz)+1,oneSqx,oneSqy);
-			//c.drawImage(flagImg,this.xPoz+1,this.yPoz+1,oneSqx-2,oneSqy-2);
+			c.drawImage(imageObjects[1],(this.xPoz)+1,(this.yPoz)+1,oneRectX,oneRectY);
+			//c.drawImage(flagImg,this.xPoz+1,this.yPoz+1,oneRectX-2,oneRectY-2);
 			this.hasEmptyImage=true;
 	}
 
@@ -292,7 +297,7 @@ function showAllVisibles(){
 
 
 OneMine.prototype.putPicture = function(imageNum) {
-	c.drawImage(imageObjects[imageNum],(this.xPoz)+1,(this.yPoz)+1,oneSqx,oneSqy);
+	c.drawImage(imageObjects[imageNum],(this.xPoz)+1,(this.yPoz)+1,oneRectX,oneRectY);
 }
 
 
@@ -376,7 +381,7 @@ for(var i = 0;i<xSize;i++){
 	mineArray[i]=[];
 
 	for(var j = 0;j<ySize;j++){
-		mineArray[i][j]=(new OneMine(i,j,oneSqx,oneSqy,false,false));
+		mineArray[i][j]=(new OneMine(i,j,false,false));
 }}
 
 randomMine();
@@ -414,8 +419,8 @@ function drawBoard(){
 
 		for(var i = 0;i<xSize+1;i++){
 			c.beginPath();
-			c.moveTo(topLeftX+oneSqx*i,topLeftY);
-			c.lineTo(topLeftX+oneSqx*i,topLeftY+oneSqy*ySize);
+			c.moveTo(topLeftX+oneRectX*i,topLeftY);
+			c.lineTo(topLeftX+oneRectX*i,topLeftY+oneRectY*ySize);
 			c.lineWidth = 1;
 			c.stroke();
 			
@@ -424,8 +429,8 @@ function drawBoard(){
 		
 		for(var j = 0;j<ySize+1;j++){
 			c.beginPath();
-			c.moveTo(topLeftX,topLeftY+oneSqy*j);
-			c.lineTo(topLeftX+oneSqy*xSize,topLeftY+oneSqy*j);
+			c.moveTo(topLeftX,topLeftY+oneRectY*j);
+			c.lineTo(topLeftX+oneRectY*xSize,topLeftY+oneRectY*j);
 			c.stroke();
 		}
 
