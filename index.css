@@ -3,5 +3,7 @@ body {
 }
 
 #CanvasContainer {
-	margin: 0 auto;
+	overflow: scroll;
+	margin: auto;
 }
+

@@ -211,9 +211,9 @@ OneMine.prototype.update = function(){
 		
 		if (!this.flagged) {
 			
-			this.reset();
+		this.reset();
 			
-			if (this.mine==true) {
+		if (this.mine==true) {
 				
 				c.fillStyle = "#FF0000";
 				c.fillRect(this.xPoz+1, this.yPoz+1, oneRectX-2,oneRectY-2);
@@ -221,14 +221,38 @@ OneMine.prototype.update = function(){
 		}
 
 		if (this.visible == true) {
-		c.fillStyle="black";
+		
 		c.lineWidth = 2;
 		//c.rect(this.xPoz, this.yPoz, this.x, this.y);
-		c.stroke();
+		//c.stroke();
 		c.textAlign="center";
 		c.textBaseline="middle";
-
+		
+		switch(this.spell) {
+			case 1:
+				c.fillStyle="blue";
+				break;
+			case 2:
+				c.fillStyle="green";
+				break;
+			case 3:
+				c.fillStyle="red";
+				break;
+			case 4:
+				c.fillStyle="indigo";
+				break;
+			case 5:
+				c.fillStyle="maroon";
+				break;
+			case 6:
+				c.fillStyle="orange";
+				break;				
+			default:
+				c.fillStyle="black";
+		}
+		
 		c.fillText(this.spell, this.xPoz+(oneRectX)/2, topLeftY+this.j*oneRectY+(oneRectY)/2);
+
 	} else {
 		this.setemptyImage();
 	} 
@@ -275,7 +299,7 @@ OneMine.prototype.update = function(){
 		//intet adunk vissza: a körülöttünk lévő aknák számát
 		this.numberOfNeighborMines = numberOfNeighborMines;
 		
-		if (this.numberOfNeighborMines==0) {
+		if (this.numberOfNeighborMines==0 || this.mine) {
 				this.spell="";
 		} else {
 		this.spell=this.numberOfNeighborMines;
